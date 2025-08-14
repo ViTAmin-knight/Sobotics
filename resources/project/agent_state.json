@@ -1,0 +1,30 @@
+[
+  {
+    "name": "p1",
+    "row": -999,
+    "col": -999,
+    "has_stolen": true,
+    "has_exited": true
+  },
+  {
+    "name": "p2",
+    "row": -999,
+    "col": -999,
+    "has_stolen": true,
+    "has_exited": true
+  },
+  {
+    "name": "p3",
+    "row": -999,
+    "col": -999,
+    "has_stolen": true,
+    "has_exited": true
+  },
+  {
+    "name": "p4",
+    "row": -999,
+    "col": -999,
+    "has_stolen": true,
+    "has_exited": true
+  }
+]

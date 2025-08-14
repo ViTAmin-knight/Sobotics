@@ -1,0 +1,68 @@
+function path = astar_search(start_pos, goal_pos, maze_grid, wall_map, elevator_map)
+    % A* 路径搜索：支持电梯、墙体
+    open = containers.Map();
+    closed = containers.Map();
+    parent = containers.Map();
+
+    key = @(pos) sprintf('%d_%d', pos(1), pos(2));
+    h = @(pos) sum(abs(pos - goal_pos));
+
+    g_cost = containers.Map();
+    f_cost = containers.Map();
+
+    start_k = key(start_pos);
+    g_cost(start_k) = 0;
+    f_cost(start_k) = h(start_pos);
+    open(start_k) = start_pos;
+
+    while ~isempty(open)
+        % 找出 f 最小的节点
+        keys_open = keys(open);
+        f_vals = cellfun(@(k) f_cost(k), keys_open);
+        [~, idx] = min(f_vals);
+        current = open(keys_open{idx});
+        curr_k = key(current);
+
+        if isequal(current, goal_pos)
+            path = reconstruct_path(parent, current, key);
+            return;
+        end
+
+        remove(open, curr_k);
+        closed(curr_k) = true;
+
+        neighbors = get_neighbors(current, maze_grid, wall_map, elevator_map);
+        %fprintf("🌐 当前处理节点: [%d,%d]\n", current(1), current(2));
+        %fprintf("➡️ 合法邻居列表:\n");
+        %disp(neighbors);
+
+        for i = 1:size(neighbors,1)
+            n = neighbors(i,:);
+            nk = key(n);
+
+            if isKey(closed, nk)
+                continue;
+            end
+
+            tentative_g = g_cost(curr_k) + 1;
+            if ~isKey(open, nk) || tentative_g < g_cost(nk)
+                parent(nk) = current;
+                g_cost(nk) = tentative_g;
+                f_cost(nk) = tentative_g + h(n);
+                open(nk) = n;
+            end
+        end
+    end
+
+    path = [];  % 没有路径
+end
+
+function path = reconstruct_path(parent, current, key)
+    path = current;
+    while isKey(parent, key(current))
+        current = parent(key(current));
+        path = [current; path];
+    end
+end
+
+
